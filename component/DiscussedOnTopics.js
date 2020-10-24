@@ -1,12 +1,14 @@
 import React from 'react';
 
 function DiscussedOnTopics({ topic }) {
+    const date = new Date(Number(topic.discussedOn)).toLocaleDateString();
     return (
-        <div>
-            <p>{topic.title}</p>
+        <div className="prev_topics">
             <div>
-                <p>{topic.discussedOn}</p>
+                <h3>{topic.title}</h3>
+                <button className="delete">Delete</button>
             </div>
+            <p className="discussed">Discussed on {date}</p>
         </div>
     )
 }

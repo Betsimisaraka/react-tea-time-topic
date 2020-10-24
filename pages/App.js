@@ -26,23 +26,32 @@ function App() {
     return (
         <main>
             <h1>Tea Time Topic</h1>
-            <div>
-                <h3>Add a Topic</h3>
-                <Form />
-            </div>
-            <div>
-                <h3>Next Topics</h3>
-                {topics
-                    .map(topic =>
-                        <DisplayTopics key={topic.id} topic={topic} />
-                    )}
-            </div>
-            <div>
-                <h3>Prev Topics</h3>
-                {topics
-                    .map(topic =>
-                        <DiscussedOnTopics key={topic.id} topic={topic} />
-                    )}
+            <div className="container">
+                <div>
+                    <h2>Add a Topic</h2>
+                    <Form />
+                </div>
+                <div>
+                    <h2>Next Topics</h2>
+                    {topics
+                        .filter(topic => !topic.discussedOn)
+                        .sort((a, b) => {
+                            const votesA = a.upvotes - a.downvotes;
+                            const votesB = b.upvotes - b.downvotes;
+                            return votesB - votesA;
+                        })
+                        .map(topic =>
+                            <DisplayTopics key={topic.id} topic={topic} />
+                        )}
+                </div>
+                <div>
+                    <h2>Prev Topics</h2>
+                    {topics
+                        .filter(topic => topic.discussedOn)
+                        .map(topic =>
+                            <DiscussedOnTopics key={topic.id} topic={topic} />
+                        )}
+                </div>
             </div>
         </main>
     )

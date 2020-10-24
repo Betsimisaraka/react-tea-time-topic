@@ -1,0 +1,158 @@
+html {
+    font-family: 'Roboto' sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: normal;
+}
+
+body {
+    background: #E5E5E5;
+}
+
+body, h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 64px;
+    line-height: 75px;
+    color: #00473E;
+    text-align: center;
+} 
+
+h2 {
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #00473E;
+    padding-bottom: 10px;
+    padding-top: 50px;
+}
+
+h3 {
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+    color: #00473E;
+}
+
+.container {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    padding-left: 27px;
+    padding-right: 27px;
+    padding-top: 23px;
+    padding-bottom: 23px;
+}
+
+form, input[type="text"], .submit, .prev_topics, .next_topics {
+    border-radius: 5px;
+    border: none;
+}
+
+form, .prev_topics, .next_topics {
+    background-color: #FFFFFF;
+    position: relative;
+    padding-left: 48px;
+    padding-right: 48px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+} 
+
+form, .prev_topics + .prev_topics, .next_topics + .next_topics {
+    margin-top: 1rem;
+}
+
+span {
+    font-size: 24px;
+    line-height: 28px;
+    color: #D8779A;
+}
+
+fieldset {
+    border: none;
+}
+
+input[type="text"] {
+    background: #F2F7F5;
+    padding: 1rem 17rem 1rem 1rem;
+    margin-right: 27px;
+}
+
+.submit {
+    background: #FAAE2C;
+    padding: 16px 23px 16px 23px;
+    align-self: center;
+    font-size: 12px;
+    line-height: 14px;
+    color: #00473E;
+    cursor: pointer;
+}
+
+.delete, .archive, .upvotes, .downvotes {
+    display: block;
+    text-indent: -9999px;
+    background-size: 2rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+}
+
+.upvotes, .downvotes {
+    background-color: #FAAE2C;
+}
+
+.archive, .delete {
+    position: absolute;
+    top: 10%;
+    right: 2%;
+    background-color: transparent;
+}
+
+.delete {
+    background-image: url(/trash.46c8aa90.svg);
+}
+
+.archive {
+    background-image: url(/archive.656a9879.svg);
+}
+
+.upvotes {
+    background-image: url(/upvotes.e17b219b.svg);
+}
+
+.downvotes {
+    background-image: url(/downvotes.6fa398e4.svg);
+}
+
+.discussed {
+    text-align: center;
+}
+
+.up_down_votes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.discussed {
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    color: #FAAE2C;
+}
+
+/*# sourceMappingURL=/style.e308ff8e.css.map */
