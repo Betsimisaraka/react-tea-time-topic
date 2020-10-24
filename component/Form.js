@@ -1,24 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 
-function Form() {
-    const [topics, setTopics] = useState('');
-    const formRef = useRef(null);
-
-    const handleChange = (e) => {
-        setTopics(e.target.value);
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        formRef.current.reset();
-        console.log('Submitted');
-    }
-
+function Form(props) {
+    const { addTopic, handleChange } = props
     return (
-        <form ref={formRef} onSubmit={handleSubmit}>
-            <fieldset>
+        <form>
+            <fieldset onSubmit={props.onSubmit}>
                 <label>
-                    <input type="text" placeholder="Whrite your topic idea here" value={topics} onChange={handleChange} />
+                    <input type="text" name="title" value={addTopic} placeholder="Whrite your topic idea here" onChange={handleChange} />
                 </label>
             </fieldset>
             <button className="submit">Submit</button>

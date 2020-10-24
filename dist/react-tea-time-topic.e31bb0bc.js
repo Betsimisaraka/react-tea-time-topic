@@ -29780,33 +29780,22 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function Form() {
-  const [topics, setTopics] = (0, _react.useState)('');
-  const formRef = (0, _react.useRef)(null);
-
-  const handleChange = e => {
-    setTopics(e.target.value);
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    formRef.current.reset();
-    console.log('Submitted');
-  };
-
-  return /*#__PURE__*/_react.default.createElement("form", {
-    ref: formRef,
-    onSubmit: handleSubmit
-  }, /*#__PURE__*/_react.default.createElement("fieldset", null, /*#__PURE__*/_react.default.createElement("label", null, /*#__PURE__*/_react.default.createElement("input", {
+function Form(props) {
+  const {
+    addTopic,
+    handleChange
+  } = props;
+  return /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("fieldset", {
+    onSubmit: props.onSubmit
+  }, /*#__PURE__*/_react.default.createElement("label", null, /*#__PURE__*/_react.default.createElement("input", {
     type: "text",
+    name: "title",
+    value: addTopic,
     placeholder: "Whrite your topic idea here",
-    value: topics,
     onChange: handleChange
   }))), /*#__PURE__*/_react.default.createElement("button", {
     className: "submit"
@@ -29827,18 +29816,28 @@ var _react = _interopRequireDefault(require("react"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function DisplayTopics({
-  topic
-}) {
+function DisplayTopics(props) {
+  const {
+    topic,
+    handleUpvotes,
+    handleDownvotes,
+    handleArchive
+  } = props;
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "next_topics"
   }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h3", null, topic.title), /*#__PURE__*/_react.default.createElement("button", {
+    id: topic.id,
+    onClick: handleArchive,
     className: "archive"
   }, "Archive")), /*#__PURE__*/_react.default.createElement("div", {
     className: "up_down_votes"
   }, /*#__PURE__*/_react.default.createElement("button", {
-    className: "upvotes"
+    id: topic.id,
+    className: "upvotes",
+    onClick: handleUpvotes
   }, "Upvotes"), /*#__PURE__*/_react.default.createElement("span", null, topic.upvotes), /*#__PURE__*/_react.default.createElement("button", {
+    id: topic.id,
+    onClick: handleDownvotes,
     className: "downvotes"
   }, "Downvotes"), /*#__PURE__*/_react.default.createElement("span", null, topic.downvotes)));
 }
@@ -29857,13 +29856,17 @@ var _react = _interopRequireDefault(require("react"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function DiscussedOnTopics({
-  topic
-}) {
+function DiscussedOnTopics(props) {
+  const {
+    topic,
+    handleDelete
+  } = props;
   const date = new Date(Number(topic.discussedOn)).toLocaleDateString();
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "prev_topics"
   }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h3", null, topic.title), /*#__PURE__*/_react.default.createElement("button", {
+    id: topic.id,
+    onClick: handleDelete,
     className: "delete"
   }, "Delete")), /*#__PURE__*/_react.default.createElement("p", {
     className: "discussed"
@@ -29896,6 +29899,16 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function App() {
   const [topics, setTopics] = (0, _react.useState)([]);
+  const [upvotes, setUpvotes] = (0, _react.useState)(0);
+  const [downvotes, setDownvotes] = (0, _react.useState)(0);
+  const [archive, setArchive] = (0, _react.useState)('');
+  const [addTopic, setAddTopic] = (0, _react.useState)({
+    upvotes: 0,
+    downvotes: 0,
+    disussedOn: '',
+    title: '',
+    id: Date.now()
+  });
   const endpoint = "https://gist.githubusercontent.com/Pinois/93afbc4a061352a0c70331ca4a16bb99/raw/6da767327041de13693181c2cb09459b0a3657a1/topics.json";
 
   const fetchTopics = async () => {
@@ -29912,18 +29925,66 @@ function App() {
   (0, _react.useEffect)(e => {
     fetchTopics();
   }, []);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    setTopics([...topics, addTopic]);
+    console.log(topics);
+  };
+
+  const handleChange = e => {
+    setAddTopic({ ...addTopic,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleArchive = e => {
+    const id = e.target.id;
+    const archived = topics.find(topic => topic.id === id);
+    const archivedTopic = archived.discussedOn = new Date();
+    setArchive(archivedTopic);
+  };
+
+  const handleUpvotes = e => {
+    const id = e.target.id;
+    const upvotesTopics = topics.find(upvote => upvote.id === id);
+    const upvotesUpdate = upvotesTopics.upvotes++;
+    setUpvotes(upvotesUpdate);
+  };
+
+  const handleDownvotes = e => {
+    const id = e.target.id;
+    const downvotesTopics = topics.find(downvote => downvote.id === id);
+    const downvotesUpdate = downvotesTopics.downvotes++;
+    setDownvotes(downvotesUpdate);
+  };
+
+  const handleDelete = e => {
+    const id = e.target.id;
+    console.log(id);
+    const deletedId = topics.filter(topic => topic.id != id);
+    setTopics(deletedId);
+  };
+
   return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("h1", null, "Tea Time Topic"), /*#__PURE__*/_react.default.createElement("div", {
     className: "container"
-  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Add a Topic"), /*#__PURE__*/_react.default.createElement(_Form.default, null)), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Next Topics"), topics.filter(topic => !topic.discussedOn).sort((a, b) => {
+  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Add a Topic"), /*#__PURE__*/_react.default.createElement(_Form.default, {
+    onSubmit: handleSubmit,
+    handleChange: handleChange
+  })), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Next Topics"), topics.filter(topic => topic.discussedOn === "").sort((a, b) => {
     const votesA = a.upvotes - a.downvotes;
     const votesB = b.upvotes - b.downvotes;
     return votesB - votesA;
   }).map(topic => /*#__PURE__*/_react.default.createElement(_DisplayTopics.default, {
     key: topic.id,
-    topic: topic
+    topic: topic,
+    handleUpvotes: handleUpvotes,
+    handleDownvotes: handleDownvotes,
+    handleArchive: handleArchive
   }))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Prev Topics"), topics.filter(topic => topic.discussedOn).map(topic => /*#__PURE__*/_react.default.createElement(_DiscussedOnTopics.default, {
     key: topic.id,
-    topic: topic
+    topic: topic,
+    handleDelete: handleDelete
   })))));
 }
 
@@ -29969,7 +30030,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53517" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61892" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
