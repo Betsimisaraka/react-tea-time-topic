@@ -29780,23 +29780,40 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
-function Form(props) {
-  const {
-    addTopic,
-    handleChange
-  } = props;
-  return /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("fieldset", {
-    onSubmit: props.onSubmit
-  }, /*#__PURE__*/_react.default.createElement("label", null, /*#__PURE__*/_react.default.createElement("input", {
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function Form({
+  topics,
+  setTopics
+}) {
+  const [addTopic, setAddTopic] = (0, _react.useState)();
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    let addTopic = {
+      upvotes: 0,
+      downvotes: 0,
+      title: e.target.title.value,
+      discussedOn: "",
+      id: Date.now()
+    };
+    console.log(addTopic);
+    topics.push(addTopic);
+    console.log(topics);
+    setTopics([...topics]);
+  };
+
+  return /*#__PURE__*/_react.default.createElement("form", {
+    onSubmit: handleSubmit
+  }, /*#__PURE__*/_react.default.createElement("fieldset", null, /*#__PURE__*/_react.default.createElement("label", null, /*#__PURE__*/_react.default.createElement("input", {
     type: "text",
     name: "title",
-    value: addTopic,
     placeholder: "Whrite your topic idea here",
-    onChange: handleChange
+    onChange: e => setAddTopic(e.target.value)
   }))), /*#__PURE__*/_react.default.createElement("button", {
     className: "submit"
   }, "Submit"));
@@ -29902,13 +29919,6 @@ function App() {
   const [upvotes, setUpvotes] = (0, _react.useState)(0);
   const [downvotes, setDownvotes] = (0, _react.useState)(0);
   const [archive, setArchive] = (0, _react.useState)('');
-  const [addTopic, setAddTopic] = (0, _react.useState)({
-    upvotes: 0,
-    downvotes: 0,
-    disussedOn: '',
-    title: '',
-    id: Date.now()
-  });
   const endpoint = "https://gist.githubusercontent.com/Pinois/93afbc4a061352a0c70331ca4a16bb99/raw/6da767327041de13693181c2cb09459b0a3657a1/topics.json";
 
   const fetchTopics = async () => {
@@ -29926,35 +29936,23 @@ function App() {
     fetchTopics();
   }, []);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    setTopics([...topics, addTopic]);
-    console.log(topics);
-  };
-
-  const handleChange = e => {
-    setAddTopic({ ...addTopic,
-      [e.target.name]: e.target.value
-    });
-  };
-
   const handleArchive = e => {
     const id = e.target.id;
-    const archived = topics.find(topic => topic.id === id);
+    const archived = topics.find(topic => topic.id == id);
     const archivedTopic = archived.discussedOn = new Date();
     setArchive(archivedTopic);
   };
 
   const handleUpvotes = e => {
     const id = e.target.id;
-    const upvotesTopics = topics.find(upvote => upvote.id === id);
+    const upvotesTopics = topics.find(upvote => upvote.id == id);
     const upvotesUpdate = upvotesTopics.upvotes++;
     setUpvotes(upvotesUpdate);
   };
 
   const handleDownvotes = e => {
     const id = e.target.id;
-    const downvotesTopics = topics.find(downvote => downvote.id === id);
+    const downvotesTopics = topics.find(downvote => downvote.id == id);
     const downvotesUpdate = downvotesTopics.downvotes++;
     setDownvotes(downvotesUpdate);
   };
@@ -29966,11 +29964,11 @@ function App() {
     setTopics(deletedId);
   };
 
-  return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("h1", null, "Tea Time Topic"), /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("h1", null, "Tea Time Topic \uD83D\uDCA1 "), /*#__PURE__*/_react.default.createElement("div", {
     className: "container"
   }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Add a Topic"), /*#__PURE__*/_react.default.createElement(_Form.default, {
-    onSubmit: handleSubmit,
-    handleChange: handleChange
+    topics: topics,
+    setTopics: setTopics
   })), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Next Topics"), topics.filter(topic => topic.discussedOn === "").sort((a, b) => {
     const votesA = a.upvotes - a.downvotes;
     const votesB = b.upvotes - b.downvotes;
@@ -30030,7 +30028,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61892" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52860" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

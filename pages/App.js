@@ -8,13 +8,6 @@ function App() {
     const [upvotes, setUpvotes] = useState(0);
     const [downvotes, setDownvotes] = useState(0);
     const [archive, setArchive] = useState('');
-    const [addTopic, setAddTopic] = useState({
-            upvotes: 0,
-            downvotes: 0,
-            disussedOn: '',
-            title: '',
-            id: Date.now(),
-        });
 
     const endpoint = "https://gist.githubusercontent.com/Pinois/93afbc4a061352a0c70331ca4a16bb99/raw/6da767327041de13693181c2cb09459b0a3657a1/topics.json";
 
@@ -33,29 +26,16 @@ function App() {
         fetchTopics();
     }, []);
 
-    const handleSubmit = e => {
-        e.preventDefault();
-        setTopics([...topics, addTopic]);
-        console.log(topics);
-    };
-    
-    const handleChange = e => {
-        setAddTopic({
-           ...addTopic, [e.target.name]: e.target.value
-        });
-    };
-
-
     const handleArchive = (e) => {
         const id = e.target.id;
-        const archived = topics.find(topic => topic.id === id)
+        const archived = topics.find(topic => topic.id == id)
         const archivedTopic = archived.discussedOn = new Date();
         setArchive(archivedTopic)
     }
 
     const handleUpvotes = (e) => {
         const id = e.target.id;
-        const upvotesTopics = topics.find(upvote => upvote.id === id);
+        const upvotesTopics = topics.find(upvote => upvote.id == id);
         const upvotesUpdate = upvotesTopics.upvotes ++;
         setUpvotes(upvotesUpdate);
     }
@@ -63,7 +43,7 @@ function App() {
 
     const handleDownvotes = (e) => {
         const id = e.target.id;
-        const downvotesTopics = topics.find(downvote => downvote.id === id);
+        const downvotesTopics = topics.find(downvote => downvote.id == id);
         const downvotesUpdate = downvotesTopics.downvotes ++;
         setDownvotes(downvotesUpdate);
     }
@@ -77,11 +57,11 @@ function App() {
 
     return (
         <main>
-            <h1>Tea Time Topic</h1>
+            <h1>Tea Time Topic 💡 </h1>
             <div className="container">
                 <div>
                     <h2>Add a Topic</h2>
-                    <Form onSubmit={handleSubmit} handleChange={handleChange} />
+                    <Form topics={topics} setTopics={setTopics}/>
                 </div>
                 <div>
                     <h2>Next Topics</h2>
